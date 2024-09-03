@@ -1,6 +1,11 @@
 # Helm Chart for FDDB-Exporter
 See: [application repository](https://github.com/itobey/fddb-exporter)
 
+Usage:
+```
+helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.0.0
+```
+
 ## Parameters
 
 ### Replica Configuration

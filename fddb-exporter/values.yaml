@@ -1,0 +1,151 @@
+## @section Replica Configuration
+## @param replicaCount Number of replicas to deploy
+replicaCount: 1
+
+## @section Image Configuration
+## @param image.repository The image repository to pull from
+## @param image.tag The image tag to pull
+## @param image.pullPolicy The Kubernetes image pull policy
+image:
+  repository: ghcr.io/itobey/fddb-exporter
+  tag: 1.2.0
+  pullPolicy: IfNotPresent
+
+## @section Name Overrides
+## @param nameOverride Partially override the name of the deployed resources
+## @param fullnameOverride Fully override the name of the deployed resources
+nameOverride: ""
+fullnameOverride: ""
+
+## @section Service Account Configuration
+## @param serviceAccount.create Specifies whether a service account should be created
+## @param serviceAccount.annotations Annotations to add to the service account
+## @param serviceAccount.name The name of the service account to use (ignored if create is true)
+serviceAccount:
+  create: true
+  annotations: { }
+  name: ""
+
+## @section Pod Annotations
+## @param podAnnotations Annotations to add to the pod
+podAnnotations: { }
+
+## @section Pod Security Context
+## @param podSecurityContext The security context for the pod
+podSecurityContext: { }
+
+## @section Security Context
+## @param securityContext The security context
+securityContext: { }
+
+## @section Service configuration
+## Configuration parameters for the service.
+service:
+  ## @param service.type The type of service to use. Can be ClusterIP, NodePort, or LoadBalancer.
+  type: ClusterIP
+  ## @param service.port The port that the service will expose.
+  port: 8080
+
+## @section Ingress configuration
+## Configuration parameters for ingress.
+ingress:
+  ## @param ingress.enabled Enable or disable the ingress.
+  enabled: true
+  ## @param ingress.className The class name of the ingress controller.
+  className: ""
+  ## @skip ingress.hosts List of hosts to be covered by this ingress.
+  hosts:
+    ## @extra ingress.hosts.host Host name of the ingress.
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  ## @param ingress.tls TLS configuration for the ingress.
+  tls: [ ]
+
+## @section Resource configuration
+## @param resources Configure resource requests and limits for the application.
+resources: { }
+
+## @section Node Selector
+## @param nodeSelector Define node selection criteria.
+nodeSelector: { }
+
+## @section Tolerations
+## @param tolerations Define tolerations for the application.
+tolerations: [ ]
+
+## @section Affinity
+## @param affinity Define affinity rules for the application.
+affinity: { }
+
+## @section Probes configuration
+## Configuration for liveness and readiness probes.
+probes:
+  liveness:
+    ## @param probes.liveness.enabled Enable or disable the liveness probe.
+    enabled: true
+    ## @param probes.liveness.path The path to check for the liveness probe.
+    path: /actuator/health/liveness
+    ## @param probes.liveness.port The port used by the liveness probe.
+    port: http
+    ## @param probes.liveness.initialDelaySeconds Initial delay before the first probe is initiated.
+    initialDelaySeconds: 25
+    ## @param probes.liveness.periodSeconds Period between successive probes.
+    periodSeconds: 600
+    ## @param probes.liveness.timeoutSeconds Timeout for each probe.
+    timeoutSeconds: 5
+    ## @param probes.liveness.failureThreshold Number of consecutive failures before marking the probe as failed.
+    failureThreshold: 3
+    ## @param probes.liveness.successThreshold Number of consecutive successes before marking the probe as successful.
+    successThreshold: 1
+
+  readiness:
+    ## @param probes.readiness.enabled Enable or disable the readiness probe.
+    enabled: true
+    ## @param probes.readiness.path The path to check for the readiness probe.
+    path: /actuator/health/readiness
+    ## @param probes.readiness.port The port used by the readiness probe.
+    port: http
+    ## @param probes.readiness.initialDelaySeconds Initial delay before the first probe is initiated.
+    initialDelaySeconds: 20
+    ## @param probes.readiness.periodSeconds Period between successive probes.
+    periodSeconds: 30
+    ## @param probes.readiness.timeoutSeconds Timeout for each probe.
+    timeoutSeconds: 5
+    ## @param probes.readiness.failureThreshold Number of consecutive failures before marking the probe as failed.
+    failureThreshold: 3
+    ## @param probes.readiness.successThreshold Number of consecutive successes before marking the probe as successful.
+    successThreshold: 1
+
+## @section MongoDB configuration
+## Configuration parameters for MongoDB connection.
+mongodb:
+  ## @param mongodb.host MongoDB host.
+  host: "localhost"
+  ## @param mongodb.port MongoDB port.
+  port: "27017"
+  ## @param mongodb.database MongoDB database name.
+  database: "database"
+  ## @param mongodb.username MongoDB username.
+  username: "username"
+
+## @section FDDB configuration
+## Configuration parameters for FDDB.
+fddb:
+  auth:
+    secretRef:
+      ## @param fddb.auth.secretRef.name Reference to the secret for FDDB authentication.
+      name: fddb-exporter-secret
+
+## @section Prometheus PodMonitor configuration
+## Configuration for the Prometheus Operator PodMonitor.
+podMonitor:
+  ## @param podMonitor.enabled Enable or disable the PodMonitor.
+  enabled: false
+  ## @param podMonitor.interval Interval at which metrics should be scraped.
+  interval: 30s
+  ## @param podMonitor.scrapeTimeout Timeout for the scrape request.
+  scrapeTimeout: 10s
+  ## @param podMonitor.path Path to scrape metrics from.
+  path: /metrics

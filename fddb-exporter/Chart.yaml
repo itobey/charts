@@ -1,8 +1,8 @@
 apiVersion: v2
 name: fddb-exporter
 description: A Helm chart for FDDB Exporter
-version: 1.0.3
-appVersion: "1.3.0"
+version: 1.0.4
+appVersion: "1.4.0"
 maintainers:
   - name: itobey
     email: helm@itobey.dev

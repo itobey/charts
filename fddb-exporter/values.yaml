@@ -8,7 +8,7 @@ replicaCount: 1
 ## @param image.pullPolicy The Kubernetes image pull policy
 image:
   repository: ghcr.io/itobey/fddb-exporter
-  tag: 1.4.0
+  tag: 1.5.0
   pullPolicy: IfNotPresent
 
 ## @section Name Overrides
@@ -121,6 +121,8 @@ probes:
 ## @section MongoDB configuration
 ## Configuration parameters for MongoDB connection.
 mongodb:
+  ## @param mongodb.enabled Enables MongoDB.
+  enabled: "true"
   ## @param mongodb.host MongoDB host.
   host: "localhost"
   ## @param mongodb.port MongoDB port.
@@ -129,6 +131,28 @@ mongodb:
   database: "database"
   ## @param mongodb.username MongoDB username.
   username: "username"
+  ## @param mongodb.password MongoDB password.
+  password: "password"
+  secretRef:
+    ## @param mongodb.secretRef.name Existing MongoDB secret name.
+    name: placeholder-mongodb-secret
+
+## @section InfluxDB configuration
+## Configuration parameters for InfluxDB connection.
+influxdb:
+  ## @param influxdb.enabled Enables InfluxDB.
+  enabled: "false"
+  ## @param influxdb.url InfluxDB url.
+  url: "http://localhost:8086"
+  ## @param influxdb.org InfluxDB org.
+  org: "primary"
+  ## @param influxdb.bucket InfluxDB bucket.
+  bucket: "fddb-exporter"
+  ## @param influxdb.token InfluxDB token.
+  token: "token"
+  secretRef:
+    ## @param influxdb.secretRef.name Existing InfluxDB secret name.
+    name: placeholder-influxdb-secret
 
 ## @section FDDB configuration
 ## Configuration parameters for FDDB.

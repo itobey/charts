@@ -11,8 +11,6 @@ data:
   SPRING_DATA_MONGODB_PORT: {{ .Values.mongodb.port | quote }}
   SPRING_DATA_MONGODB_DATABASE: {{ .Values.mongodb.database | quote }}
   SPRING_DATA_MONGODB_USERNAME: {{ .Values.mongodb.username | quote }}
-  SPRING_DATA_MONGODB_PASSWORD: {{ .Values.mongodb.password | quote }}
   FDDB_EXPORTER_INFLUXDB_URL: {{ .Values.influxdb.url | quote }}
   FDDB_EXPORTER_INFLUXDB_ORG: {{ .Values.influxdb.org | quote }}
   FDDB_EXPORTER_INFLUXDB_BUCKET: {{ .Values.influxdb.bucket | quote }}
-  FDDB_EXPORTER_INFLUXDB_TOKEN: {{ .Values.influxdb.token | quote }}

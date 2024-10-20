@@ -32,7 +32,9 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.0
 ### FDDB configuration
 
 | Name                       | Description                                      | Value                  |
-| -------------------------- | ------------------------------------------------ | ---------------------- |
+|----------------------------|--------------------------------------------------|------------------------|
+| `fddb.auth.username`       | FDDB username.                                   | `user@example.com`     |
+| `fddb.auth.password`       | FDDB password.                                   | `password`             |
 | `fddb.auth.secretRef.name` | Reference to the secret for FDDB authentication. | `fddb-exporter-secret` |
 
 ### MongoDB configuration

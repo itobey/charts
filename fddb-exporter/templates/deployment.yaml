@@ -34,24 +34,32 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
-            - secretRef:
-                name: {{ .Values.fddb.auth.secretRef.name }}
             - configMapRef:
                 name: {{ include "fddb-exporter.fullname" . }}-config
           env:
-            {{- if eq .Values.mongodb.enabled "true" }}
+            - name: FDDB-EXPORTER_FDDB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if not .Values.fddb.auth.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-fddb{{ else }}{{ .Values.fddb.auth.secretRef.name }}{{ end }}
+                  key: FDDB-EXPORTER_FDDB_USERNAME
+            - name: FDDB-EXPORTER_FDDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if not .Values.fddb.auth.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-fddb{{ else }}{{ .Values.fddb.auth.secretRef.name }}{{ end }}
+                  key: FDDB-EXPORTER_FDDB_PASSWORD
+            {{- if .Values.mongodb.enabled }}
             - name: SPRING_DATA_MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ if eq .Values.mongodb.secretRef.name "placeholder-mongodb-secret" }}{{ include "fddb-exporter.fullname" . }}-mongodb{{ else }}{{ .Values.mongodb.secretRef.name }}{{ end }}
+                  name: {{ if not .Values.mongodb.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-mongodb{{ else }}{{ .Values.mongodb.secretRef.name }}{{ end }}
                   key: SPRING_DATA_MONGODB_PASSWORD
             {{- end }}
-            {{- if eq .Values.influxdb.enabled "true" }}
-            - name: FDDB_EXPORTER_INFLUXDB_TOKEN
+            {{- if .Values.influxdb.enabled }}
+            - name: FDDB-EXPORTER_INFLUXDB_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ if eq .Values.influxdb.secretRef.name "placeholder-influxdb-secret" }}{{ include "fddb-exporter.fullname" . }}-influxdb{{ else }}{{ .Values.influxdb.secretRef.name }}{{ end }}
-                  key: FDDB_EXPORTER_INFLUXDB_TOKEN
+                  name: {{ if not .Values.influxdb.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-influxdb{{ else }}{{ .Values.influxdb.secretRef.name }}{{ end }}
+                  key: FDDB-EXPORTER_INFLUXDB_TOKEN
             {{- end }}
           ports:
               - name: http

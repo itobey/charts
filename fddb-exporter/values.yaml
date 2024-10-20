@@ -122,7 +122,7 @@ probes:
 ## Configuration parameters for MongoDB connection.
 mongodb:
   ## @param mongodb.enabled Enables MongoDB.
-  enabled: "true"
+  enabled: true
   ## @param mongodb.host MongoDB host.
   host: "localhost"
   ## @param mongodb.port MongoDB port.
@@ -135,13 +135,13 @@ mongodb:
   password: "password"
   secretRef:
     ## @param mongodb.secretRef.name Existing MongoDB secret name. Must have key SPRING_DATA_MONGODB_PASSWORD
-    name: placeholder-mongodb-secret
+    name: ""
 
 ## @section InfluxDB configuration
 ## Configuration parameters for InfluxDB connection.
 influxdb:
   ## @param influxdb.enabled Enables InfluxDB.
-  enabled: "false"
+  enabled: false
   ## @param influxdb.url InfluxDB url.
   url: "http://localhost:8086"
   ## @param influxdb.org InfluxDB org.
@@ -152,15 +152,19 @@ influxdb:
   token: "token"
   secretRef:
     ## @param influxdb.secretRef.name Existing InfluxDB secret name. Must have key FDDB_EXPORTER_INFLUXDB_TOKEN
-    name: placeholder-influxdb-secret
+    name: ""
 
 ## @section FDDB configuration
 ## Configuration parameters for FDDB.
 fddb:
   auth:
+    ## @param FDDB username.
+    username: "username"
+    ## @param FDDB password.
+    password: "password"
     secretRef:
-      ## @param fddb.auth.secretRef.name Reference to the secret for FDDB authentication.
-      name: fddb-exporter-secret
+      ## @param fddb.auth.secretRef.name Reference to the secret for FDDB authentication. Must have key FDDB-EXPORTER_FDDB_USERNAME and FDDB-EXPORTER_FDDB_PASSWORD
+      name: ""
 
 ## @section Prometheus PodMonitor configuration
 ## Configuration for the Prometheus Operator PodMonitor.

@@ -37,26 +37,26 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.0
 
 ### MongoDB configuration
 
-| Name                     | Description                   | Value       |
-|--------------------------|-------------------------------|-------------|
-| `mongodb.enabled`        | Enables MongoDB.              | `true`      |
-| `mongodb.host`           | MongoDB host.                 | `localhost` |
-| `mongodb.port`           | MongoDB port.                 | `27017`     |
-| `mongodb.database`       | MongoDB database name.        | `database`  |
-| `mongodb.username`       | MongoDB username.             | `username`  |
-| `mongodb.password`       | MongoDB password.             | `password`  |
-| `mongodb.secretRef.name` | Existing MongoDB secret name. | `password`  |
+| Name                     | Description                                                              | Value       |
+|--------------------------|--------------------------------------------------------------------------|-------------|
+| `mongodb.enabled`        | Enables MongoDB.                                                         | `true`      |
+| `mongodb.host`           | MongoDB host.                                                            | `localhost` |
+| `mongodb.port`           | MongoDB port.                                                            | `27017`     |
+| `mongodb.database`       | MongoDB database name.                                                   | `database`  |
+| `mongodb.username`       | MongoDB username.                                                        | `username`  |
+| `mongodb.password`       | MongoDB password.                                                        | `password`  |
+| `mongodb.secretRef.name` | Existing MongoDB secret name. Must have key SPRING_DATA_MONGODB_PASSWORD | `password`  |
 
 ### InfluxDB configuration
 
-| Name                      | Description                    | Value                   |
-|---------------------------|--------------------------------|-------------------------|
-| `influxdb.enabled`        | Enables InfluxDB.              | `false`                 |
-| `influxdb.url`            | InfluxDB url.                  | `http://localhost:8086` |
-| `influxdb.org`            | InfluxDB org.                  | `primary`               |
-| `influxdb.bucket`         | InfluxDB bucket.               | `fddb-exporter`         |
-| `influxdb.token`          | InfluxDB token.                | `token`                 |
-| `influxdb.secretRef.name` | Existing InfluxDB secret name. | `password`              |
+| Name                      | Description                                                               | Value                   |
+|---------------------------|---------------------------------------------------------------------------|-------------------------|
+| `influxdb.enabled`        | Enables InfluxDB.                                                         | `false`                 |
+| `influxdb.url`            | InfluxDB url.                                                             | `http://localhost:8086` |
+| `influxdb.org`            | InfluxDB org.                                                             | `primary`               |
+| `influxdb.bucket`         | InfluxDB bucket.                                                          | `fddb-exporter`         |
+| `influxdb.token`          | InfluxDB token.                                                           | `token`                 |
+| `influxdb.secretRef.name` | Existing InfluxDB secret name. Must have key FDDB_EXPORTER_INFLUXDB_TOKEN | `password`              |
 
 ### Service Account Configuration
 

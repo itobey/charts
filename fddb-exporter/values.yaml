@@ -134,7 +134,7 @@ mongodb:
   ## @param mongodb.password MongoDB password.
   password: "password"
   secretRef:
-    ## @param mongodb.secretRef.name Existing MongoDB secret name.
+    ## @param mongodb.secretRef.name Existing MongoDB secret name. Must have key SPRING_DATA_MONGODB_PASSWORD
     name: placeholder-mongodb-secret
 
 ## @section InfluxDB configuration
@@ -151,7 +151,7 @@ influxdb:
   ## @param influxdb.token InfluxDB token.
   token: "token"
   secretRef:
-    ## @param influxdb.secretRef.name Existing InfluxDB secret name.
+    ## @param influxdb.secretRef.name Existing InfluxDB secret name. Must have key FDDB_EXPORTER_INFLUXDB_TOKEN
     name: placeholder-influxdb-secret
 
 ## @section FDDB configuration

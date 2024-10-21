@@ -66,7 +66,7 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.0
 | `influxdb.org`            | InfluxDB org.                                                             | `primary`               |
 | `influxdb.bucket`         | InfluxDB bucket.                                                          | `fddb-exporter`         |
 | `influxdb.token`          | InfluxDB token.                                                           | `token`                 |
-| `influxdb.secretRef.name` | Existing InfluxDB secret name. Must have key FDDB_EXPORTER_INFLUXDB_TOKEN | `password`              |
+| `influxdb.secretRef.name` | Existing InfluxDB secret name. Must have key FDDB-EXPORTER_INFLUXDB_TOKEN | `password`              |
 
 ### Service Account Configuration
 

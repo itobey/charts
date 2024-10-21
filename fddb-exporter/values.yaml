@@ -151,7 +151,7 @@ influxdb:
   ## @param influxdb.token InfluxDB token.
   token: "token"
   secretRef:
-    ## @param influxdb.secretRef.name Existing InfluxDB secret name. Must have key FDDB_EXPORTER_INFLUXDB_TOKEN
+    ## @param influxdb.secretRef.name Existing InfluxDB secret name. Must have key FDDB-EXPORTER_INFLUXDB_TOKEN
     name: ""
 
 ## @section FDDB configuration

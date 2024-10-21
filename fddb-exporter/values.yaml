@@ -166,6 +166,10 @@ fddb:
       ## @param fddb.auth.secretRef.name Reference to the secret for FDDB authentication. Must have key FDDB-EXPORTER_FDDB_USERNAME and FDDB-EXPORTER_FDDB_PASSWORD
       name: ""
 
+## @section Timezone configuration
+## @param timezone Timezone for the FDDB exporter
+timezone: "Europe/Berlin"
+
 ## @section Prometheus PodMonitor configuration
 ## Configuration for the Prometheus Operator PodMonitor.
 podMonitor:

@@ -5,7 +5,13 @@ metadata:
   labels:
     {{- include "fddb-exporter.labels" . | nindent 4 }}
 data:
+  FDDB_EXPORTER_PERSISTENCE_MONGODB_ENABLED: {{ .Values.mongodb.enabled | quote }}
+  FDDB_EXPORTER_PERSISTENCE_INFLUXDB_ENABLED: {{ .Values.influxdb.enabled | quote }}
   SPRING_DATA_MONGODB_HOST: {{ .Values.mongodb.host | quote }}
   SPRING_DATA_MONGODB_PORT: {{ .Values.mongodb.port | quote }}
   SPRING_DATA_MONGODB_DATABASE: {{ .Values.mongodb.database | quote }}
   SPRING_DATA_MONGODB_USERNAME: {{ .Values.mongodb.username | quote }}
+  FDDB_EXPORTER_INFLUXDB_URL: {{ .Values.influxdb.url | quote }}
+  FDDB_EXPORTER_INFLUXDB_ORG: {{ .Values.influxdb.org | quote }}
+  FDDB_EXPORTER_INFLUXDB_BUCKET: {{ .Values.influxdb.bucket | quote }}
+  TZ: {{ .Values.timezone | quote }}

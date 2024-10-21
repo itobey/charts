@@ -3,8 +3,16 @@ See: [application repository](https://github.com/itobey/fddb-exporter)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.0.4
+helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.0
 ```
+
+# Changelog
+
+## 1.1.0
+
+- Added InfluxDB configuration
+- Updated secret generation and reference for MongoDB and FDDB
+- Added timezone configuration
 
 ## Parameters
 
@@ -19,7 +27,7 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.0.4
 | Name               | Description                       | Value                          |
 | ------------------ | --------------------------------- |--------------------------------|
 | `image.repository` | The image repository to pull from | `ghcr.io/itobey/fddb-exporter` |
-| `image.tag`        | The image tag to pull             | `1.4.0`                        |
+| `image.tag`        | The image tag to pull             | `1.5.0`                        |
 | `image.pullPolicy` | The Kubernetes image pull policy  | `IfNotPresent`                 |
 
 ### Name Overrides
@@ -28,6 +36,37 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.0.4
 | ------------------ | ----------------------------------------------------- | ----- |
 | `nameOverride`     | Partially override the name of the deployed resources | `""`  |
 | `fullnameOverride` | Fully override the name of the deployed resources     | `""`  |
+
+### FDDB configuration
+
+| Name                       | Description                                      | Value                  |
+|----------------------------|--------------------------------------------------|------------------------|
+| `fddb.auth.username`       | FDDB username.                                   | `user@example.com`     |
+| `fddb.auth.password`       | FDDB password.                                   | `password`             |
+| `fddb.auth.secretRef.name` | Reference to the secret for FDDB authentication. | `fddb-exporter-secret` |
+
+### MongoDB configuration
+
+| Name                     | Description                                                              | Value       |
+|--------------------------|--------------------------------------------------------------------------|-------------|
+| `mongodb.enabled`        | Enables MongoDB.                                                         | `true`      |
+| `mongodb.host`           | MongoDB host.                                                            | `localhost` |
+| `mongodb.port`           | MongoDB port.                                                            | `27017`     |
+| `mongodb.database`       | MongoDB database name.                                                   | `database`  |
+| `mongodb.username`       | MongoDB username.                                                        | `username`  |
+| `mongodb.password`       | MongoDB password.                                                        | `password`  |
+| `mongodb.secretRef.name` | Existing MongoDB secret name. Must have key SPRING_DATA_MONGODB_PASSWORD | `password`  |
+
+### InfluxDB configuration
+
+| Name                      | Description                                                               | Value                   |
+|---------------------------|---------------------------------------------------------------------------|-------------------------|
+| `influxdb.enabled`        | Enables InfluxDB.                                                         | `false`                 |
+| `influxdb.url`            | InfluxDB url.                                                             | `http://localhost:8086` |
+| `influxdb.org`            | InfluxDB org.                                                             | `primary`               |
+| `influxdb.bucket`         | InfluxDB bucket.                                                          | `fddb-exporter`         |
+| `influxdb.token`          | InfluxDB token.                                                           | `token`                 |
+| `influxdb.secretRef.name` | Existing InfluxDB secret name. Must have key FDDB_EXPORTER_INFLUXDB_TOKEN | `password`              |
 
 ### Service Account Configuration
 
@@ -115,21 +154,6 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.0.4
 | `probes.readiness.timeoutSeconds`      | Timeout for each probe.                                                 | `5`                          |
 | `probes.readiness.failureThreshold`    | Number of consecutive failures before marking the probe as failed.      | `3`                          |
 | `probes.readiness.successThreshold`    | Number of consecutive successes before marking the probe as successful. | `1`                          |
-
-### MongoDB configuration
-
-| Name               | Description            | Value       |
-| ------------------ | ---------------------- | ----------- |
-| `mongodb.host`     | MongoDB host.          | `localhost` |
-| `mongodb.port`     | MongoDB port.          | `27017`     |
-| `mongodb.database` | MongoDB database name. | `database`  |
-| `mongodb.username` | MongoDB username.      | `username`  |
-
-### FDDB configuration
-
-| Name                       | Description                                      | Value                  |
-| -------------------------- | ------------------------------------------------ | ---------------------- |
-| `fddb.auth.secretRef.name` | Reference to the secret for FDDB authentication. | `fddb-exporter-secret` |
 
 ### Prometheus PodMonitor configuration
 

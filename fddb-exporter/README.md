@@ -6,6 +6,14 @@ Usage:
 helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.0
 ```
 
+# Changelog
+
+## 1.1.0
+
+- Added InfluxDB configuration
+- Updated secret generation and reference for MongoDB and FDDB
+- Added timezone configuration
+
 ## Parameters
 
 ### Replica Configuration

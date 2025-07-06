@@ -3,7 +3,7 @@ See: [application repository](https://github.com/itobey/fddb-exporter)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.0
+helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.1
 ```
 
 # Changelog
@@ -27,7 +27,7 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.0
 | Name               | Description                       | Value                          |
 | ------------------ | --------------------------------- |--------------------------------|
 | `image.repository` | The image repository to pull from | `ghcr.io/itobey/fddb-exporter` |
-| `image.tag`        | The image tag to pull             | `1.5.0`                        |
+| `image.tag`        | The image tag to pull             | `1.6.0`                        |
 | `image.pullPolicy` | The Kubernetes image pull policy  | `IfNotPresent`                 |
 
 ### Name Overrides

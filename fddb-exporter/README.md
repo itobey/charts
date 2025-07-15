@@ -8,6 +8,10 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.1
 
 # Changelog
 
+## 1.1.1
+
+- Updated default app version to 1.6.0
+
 ## 1.1.0
 
 - Added InfluxDB configuration

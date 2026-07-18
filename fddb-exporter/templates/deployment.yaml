@@ -48,11 +48,11 @@ spec:
                   name: {{ if not .Values.fddb.auth.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-fddb{{ else }}{{ .Values.fddb.auth.secretRef.name }}{{ end }}
                   key: FDDB-EXPORTER_FDDB_PASSWORD
             {{- if .Values.mongodb.enabled }}
-            - name: SPRING_DATA_MONGODB_PASSWORD
+            - name: SPRING_MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ if not .Values.mongodb.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-mongodb{{ else }}{{ .Values.mongodb.secretRef.name }}{{ end }}
-                  key: SPRING_DATA_MONGODB_PASSWORD
+                  key: SPRING_MONGODB_PASSWORD
             {{- end }}
             {{- if .Values.influxdb.enabled }}
             - name: FDDB-EXPORTER_INFLUXDB_TOKEN

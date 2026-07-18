@@ -8,7 +8,7 @@ replicaCount: 1
 ## @param image.pullPolicy The Kubernetes image pull policy
 image:
   repository: ghcr.io/itobey/fddb-exporter
-  tag: 2.1.0
+  tag: 2.2.0
   pullPolicy: IfNotPresent
 
 ## @section Name Overrides
@@ -134,7 +134,7 @@ mongodb:
   ## @param mongodb.password MongoDB password.
   password: "password"
   secretRef:
-    ## @param mongodb.secretRef.name Existing MongoDB secret name. Must have key SPRING_DATA_MONGODB_PASSWORD
+    ## @param mongodb.secretRef.name Existing MongoDB secret name. Must have key SPRING_MONGODB_PASSWORD
     name: ""
 
 ## @section InfluxDB configuration

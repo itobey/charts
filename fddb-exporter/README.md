@@ -3,10 +3,15 @@ See: [application repository](https://github.com/itobey/fddb-exporter)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.7
+helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.2.0
 ```
 
 # Changelog
+
+## 2.2.0
+
+- Updated default app version to 2.2.0
+- Updated MongoDB environment variables for Spring Boot 4 compatibility: `SPRING_DATA_MONGODB_*` → `SPRING_MONGODB_*`
 
 ## 1.1.7
 
@@ -55,7 +60,7 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.7
 | Name               | Description                       | Value                          |
 | ------------------ | --------------------------------- |--------------------------------|
 | `image.repository` | The image repository to pull from | `ghcr.io/itobey/fddb-exporter` |
-| `image.tag`        | The image tag to pull             | `1.6.3`                        |
+| `image.tag`        | The image tag to pull             | `2.2.0`                        |
 | `image.pullPolicy` | The Kubernetes image pull policy  | `IfNotPresent`                 |
 
 ### Name Overrides
@@ -83,7 +88,7 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 1.1.7
 | `mongodb.database`       | MongoDB database name.                                                   | `database`  |
 | `mongodb.username`       | MongoDB username.                                                        | `username`  |
 | `mongodb.password`       | MongoDB password.                                                        | `password`  |
-| `mongodb.secretRef.name` | Existing MongoDB secret name. Must have key SPRING_DATA_MONGODB_PASSWORD | `password`  |
+| `mongodb.secretRef.name` | Existing MongoDB secret name. Must have key SPRING_MONGODB_PASSWORD | `password`  |
 
 ### InfluxDB configuration
 

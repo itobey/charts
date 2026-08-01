@@ -8,7 +8,7 @@ replicaCount: 1
 ## @param image.pullPolicy The Kubernetes image pull policy
 image:
   repository: ghcr.io/itobey/fddb-exporter
-  tag: 2.2.0
+  tag: 2.3.0
   pullPolicy: IfNotPresent
 
 ## @section Name Overrides
@@ -165,6 +165,14 @@ fddb:
     secretRef:
       ## @param fddb.auth.secretRef.name Reference to the secret for FDDB authentication. Must have key FDDB-EXPORTER_FDDB_USERNAME and FDDB-EXPORTER_FDDB_PASSWORD
       name: ""
+
+## @section MCP server configuration
+## Configuration parameters for the MCP server (requires app version 2.3.0+ and MongoDB).
+mcp:
+  ## @param mcp.enabled Enables the MCP server endpoint at /mcp with the read-only tools. Requires mongodb.enabled.
+  enabled: false
+  ## @param mcp.writeToolsEnabled Additionally expose the export tools, which scrape FDDB and write to the database. Requires mcp.enabled.
+  writeToolsEnabled: false
 
 ## @section Timezone configuration
 ## @param timezone Timezone for the FDDB exporter

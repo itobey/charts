@@ -14,4 +14,6 @@ data:
   FDDB_EXPORTER_INFLUXDB_URL: {{ .Values.influxdb.url | quote }}
   FDDB_EXPORTER_INFLUXDB_ORG: {{ .Values.influxdb.org | quote }}
   FDDB_EXPORTER_INFLUXDB_BUCKET: {{ .Values.influxdb.bucket | quote }}
+  FDDB_EXPORTER_MCP_ENABLED: {{ .Values.mcp.enabled | quote }}
+  FDDB_EXPORTER_MCP_WRITE_TOOLS_ENABLED: {{ .Values.mcp.writeToolsEnabled | quote }}
   TZ: {{ .Values.timezone | quote }}

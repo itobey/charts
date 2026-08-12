@@ -3,10 +3,14 @@ See: [application repository](https://github.com/itobey/fddb-exporter)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.3.0
+helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.4.0
 ```
 
 # Changelog
+
+## 2.4.0
+
+- Updated default app version to 2.4.0
 
 ## 2.3.0
 

@@ -3,10 +3,15 @@ See: [application repository](https://github.com/itobey/fddb-exporter)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.4.0
+helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.4.1
 ```
 
 # Changelog
+
+## 2.4.1
+
+- Updated default app version to 2.4.1
+- Added Telegram notification configuration: `notification.enabled`, `notification.telegram.token`, `notification.telegram.chatId` and `notification.telegram.secretRef.name`
 
 ## 2.4.0
 
@@ -109,6 +114,15 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.4.0
 | `influxdb.bucket`         | InfluxDB bucket.                                                          | `fddb-exporter`         |
 | `influxdb.token`          | InfluxDB token.                                                           | `token`                 |
 | `influxdb.secretRef.name` | Existing InfluxDB secret name. Must have key FDDB_EXPORTER_INFLUXDB_TOKEN | `password`              |
+
+### Notification configuration
+
+| Name                                   | Description                                                                                                                                        | Value     |
+|----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|-----------|
+| `notification.enabled`                 | Enables notifications for failed scheduled exports.                                                                                                | `false`   |
+| `notification.telegram.token`          | Telegram bot token from BotFather.                                                                                                                 | `token`   |
+| `notification.telegram.chatId`         | Telegram chat id to send the message to.                                                                                                           | `chatId`  |
+| `notification.telegram.secretRef.name` | Existing Telegram secret name. Must have keys FDDB-EXPORTER_NOTIFICATION_TELEGRAM_TOKEN and FDDB-EXPORTER_NOTIFICATION_TELEGRAM_CHATID | `""`      |
 
 ### Service Account Configuration
 

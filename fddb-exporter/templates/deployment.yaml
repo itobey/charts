@@ -61,6 +61,18 @@ spec:
                   name: {{ if not .Values.influxdb.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-influxdb{{ else }}{{ .Values.influxdb.secretRef.name }}{{ end }}
                   key: FDDB-EXPORTER_INFLUXDB_TOKEN
             {{- end }}
+            {{- if .Values.notification.enabled }}
+            - name: FDDB-EXPORTER_NOTIFICATION_TELEGRAM_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if not .Values.notification.telegram.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-telegram{{ else }}{{ .Values.notification.telegram.secretRef.name }}{{ end }}
+                  key: FDDB-EXPORTER_NOTIFICATION_TELEGRAM_TOKEN
+            - name: FDDB-EXPORTER_NOTIFICATION_TELEGRAM_CHATID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if not .Values.notification.telegram.secretRef.name }}{{ include "fddb-exporter.fullname" . }}-telegram{{ else }}{{ .Values.notification.telegram.secretRef.name }}{{ end }}
+                  key: FDDB-EXPORTER_NOTIFICATION_TELEGRAM_CHATID
+            {{- end }}
           ports:
               - name: http
                 containerPort: {{ .Values.service.port }}

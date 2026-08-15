@@ -8,7 +8,7 @@ replicaCount: 1
 ## @param image.pullPolicy The Kubernetes image pull policy
 image:
   repository: ghcr.io/itobey/fddb-exporter
-  tag: 2.4.0
+  tag: 2.4.1
   pullPolicy: IfNotPresent
 
 ## @section Name Overrides
@@ -164,6 +164,20 @@ fddb:
     password: "password"
     secretRef:
       ## @param fddb.auth.secretRef.name Reference to the secret for FDDB authentication. Must have key FDDB-EXPORTER_FDDB_USERNAME and FDDB-EXPORTER_FDDB_PASSWORD
+      name: ""
+
+## @section Notification configuration
+## Configuration parameters for Telegram notifications, sent when a scheduled export cannot parse a day.
+notification:
+  ## @param notification.enabled Enables notifications for failed scheduled exports.
+  enabled: false
+  telegram:
+    ## @param notification.telegram.token Telegram bot token from BotFather.
+    token: "token"
+    ## @param notification.telegram.chatId Telegram chat id to send the message to.
+    chatId: "chatId"
+    secretRef:
+      ## @param notification.telegram.secretRef.name Existing Telegram secret name. Must have keys FDDB-EXPORTER_NOTIFICATION_TELEGRAM_TOKEN and FDDB-EXPORTER_NOTIFICATION_TELEGRAM_CHATID
       name: ""
 
 ## @section MCP server configuration

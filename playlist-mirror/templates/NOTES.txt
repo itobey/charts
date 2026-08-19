@@ -1,0 +1,37 @@
+Playlist Mirror has been deployed.
+
+{{- if not .Values.config.publicBaseUrl }}
+
+WARNING: config.publicBaseUrl is not set. Google sends the OAuth sign-in back to
+<PUBLIC_BASE_URL>/oauth/callback, so sign-in will fail behind an ingress until you set
+config.publicBaseUrl to the address this app is actually reached at, e.g.
+https://playlist.example.com
+{{- end }}
+
+{{- if not .Values.persistence.enabled }}
+
+WARNING: persistence.enabled is false. The OAuth client secret, the token, and every job
+will be lost on the next pod restart.
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+
+Application URL(s):
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}{{ (index .paths 0).path }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+
+Get the application URL by running:
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "playlist-mirror.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "ClusterIP" .Values.service.type }}
+
+Get the application URL by running:
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ include "playlist-mirror.fullname" . }} 8000:{{ .Values.service.port }}
+  echo http://localhost:8000
+{{- end }}
+
+On first visit you'll land on /setup: upload a Google OAuth "Desktop app" client secret
+JSON file and sign in.

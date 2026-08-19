@@ -1,0 +1,174 @@
+## @section Replica Configuration
+## @param replicaCount Number of replicas to deploy. Must stay at 1: the app keeps its job
+## state in a local SQLite file, so two pods would corrupt each other's writes.
+replicaCount: 1
+
+## @section Image Configuration
+## @param image.repository The image repository to pull from
+## @param image.tag The image tag to pull, defaults to the chart's appVersion
+## @param image.pullPolicy The Kubernetes image pull policy
+image:
+  repository: ghcr.io/itobey/playlist-mirror
+  tag: ""
+  pullPolicy: IfNotPresent
+
+## @section Image Pull Secrets
+## @param imagePullSecrets Secrets used to pull the image from a private registry
+imagePullSecrets: [ ]
+
+## @section Name Overrides
+## @param nameOverride Partially override the name of the deployed resources
+## @param fullnameOverride Fully override the name of the deployed resources
+nameOverride: ""
+fullnameOverride: ""
+
+## @section Service Account Configuration
+## @param serviceAccount.create Specifies whether a service account should be created
+## @param serviceAccount.annotations Annotations to add to the service account
+## @param serviceAccount.name The name of the service account to use (ignored if create is true)
+serviceAccount:
+  create: true
+  annotations: { }
+  name: ""
+
+## @section Pod Annotations
+## @param podAnnotations Annotations to add to the pod
+podAnnotations: { }
+
+## @section Pod Security Context
+## @param podSecurityContext The security context for the pod
+podSecurityContext: { }
+
+## @section Security Context
+## @param securityContext The security context
+securityContext: { }
+
+## @section Service configuration
+## Configuration parameters for the service.
+service:
+  ## @param service.type The type of service to use. Can be ClusterIP, NodePort, or LoadBalancer.
+  type: ClusterIP
+  ## @param service.port The port that the service will expose.
+  port: 8000
+
+## @section Ingress configuration
+## Configuration parameters for ingress. PUBLIC_BASE_URL below must match whatever address
+## you put here (or however else the app is reached), since Google sends the OAuth sign-in
+## back to <PUBLIC_BASE_URL>/oauth/callback.
+ingress:
+  ## @param ingress.enabled Enable or disable the ingress.
+  enabled: true
+  ## @param ingress.className The class name of the ingress controller.
+  className: ""
+  ## @param ingress.annotations Annotations to add to the ingress.
+  annotations: { }
+  ## @skip ingress.hosts List of hosts to be covered by this ingress.
+  hosts:
+    ## @extra ingress.hosts.host Host name of the ingress.
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  ## @param ingress.tls TLS configuration for the ingress.
+  tls: [ ]
+
+## @section Persistence configuration
+## The app keeps everything it persists — the OAuth client secret and token uploaded
+## through the UI, and the SQLite job database — under DATA_DIR, so a single volume
+## covers all of it. Without a volume, all of that is lost on every pod restart.
+persistence:
+  ## @param persistence.enabled Enable a persistent volume for DATA_DIR. Disabling it loses all state on restart.
+  enabled: true
+  ## @param persistence.existingClaim Use an existing PVC instead of creating one. Leave empty to create one.
+  existingClaim: ""
+  ## @param persistence.storageClass Storage class for the created PVC. Leave empty to use the cluster default.
+  storageClass: ""
+  ## @param persistence.accessMode Access mode for the created PVC.
+  accessMode: ReadWriteOnce
+  ## @param persistence.size Size of the created PVC.
+  size: 1Gi
+
+## @section Application configuration
+## Configuration parameters for the app itself. See app/config.py in the app repository.
+config:
+  ## @param config.publicBaseUrl Where Google sends the user back after sign-in, e.g. https://playlist.example.com. Must be reachable at /oauth/callback. Required behind an ingress — the in-container default only works for localhost.
+  publicBaseUrl: ""
+  ## @param config.playlistPrivacy Privacy of playlists this app creates. One of private, unlisted, public.
+  playlistPrivacy: private
+  ## @param config.quotaDailyLimit The project's daily YouTube Data API quota. Only seeds the figure — the value set on the Google account page in the app is stored in the database and wins from then on.
+  quotaDailyLimit: "10000"
+  ## @param config.quotaReserve Quota units held back so a run never spends the last of the allocation on an insert it cannot confirm.
+  quotaReserve: "50"
+  ## @param config.quotaResetTz Timezone the daily quota resets in. Google's own reset is midnight Pacific.
+  quotaResetTz: America/Los_Angeles
+  ## @param config.schedulerInterval Seconds between checks of jobs marked "run it when credits allow". Purely a local check, no API call.
+  schedulerInterval: "60"
+  ## @param config.insertDelay Seconds paused between playlist inserts, gentle on the per-second rate limit.
+  insertDelay: "0.2"
+
+## @section Telegram notification configuration
+## Optional: reports when standing orders have run. Both only seed the values — setting
+## them on the Telegram page in the app stores them in the database and the stored ones
+## win from then on. A token does not belong in a file you might commit, so this only
+## supports referencing an existing secret, never a plaintext value in values.yaml.
+telegram:
+  ## @param telegram.secretRef.name Existing secret name. Must have keys TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID. Leave empty to skip seeding Telegram config and set it up from the app's Telegram page instead.
+  secretRef:
+    name: ""
+
+## @section Resource configuration
+## @param resources Configure resource requests and limits for the application.
+resources: { }
+
+## @section Node Selector
+## @param nodeSelector Define node selection criteria.
+nodeSelector: { }
+
+## @section Tolerations
+## @param tolerations Define tolerations for the application.
+tolerations: [ ]
+
+## @section Affinity
+## @param affinity Define affinity rules for the application.
+affinity: { }
+
+## @section Probes configuration
+## Configuration for liveness and readiness probes. The app has no dedicated health
+## endpoint; "/" redirects to "/setup" when not yet connected, which still counts as
+## a successful probe.
+probes:
+  liveness:
+    ## @param probes.liveness.enabled Enable or disable the liveness probe.
+    enabled: true
+    ## @param probes.liveness.path The path to check for the liveness probe.
+    path: /
+    ## @param probes.liveness.port The port used by the liveness probe.
+    port: http
+    ## @param probes.liveness.initialDelaySeconds Initial delay before the first probe is initiated.
+    initialDelaySeconds: 10
+    ## @param probes.liveness.periodSeconds Period between successive probes.
+    periodSeconds: 30
+    ## @param probes.liveness.timeoutSeconds Timeout for each probe.
+    timeoutSeconds: 5
+    ## @param probes.liveness.failureThreshold Number of consecutive failures before marking the probe as failed.
+    failureThreshold: 3
+    ## @param probes.liveness.successThreshold Number of consecutive successes before marking the probe as successful.
+    successThreshold: 1
+
+  readiness:
+    ## @param probes.readiness.enabled Enable or disable the readiness probe.
+    enabled: true
+    ## @param probes.readiness.path The path to check for the readiness probe.
+    path: /
+    ## @param probes.readiness.port The port used by the readiness probe.
+    port: http
+    ## @param probes.readiness.initialDelaySeconds Initial delay before the first probe is initiated.
+    initialDelaySeconds: 5
+    ## @param probes.readiness.periodSeconds Period between successive probes.
+    periodSeconds: 15
+    ## @param probes.readiness.timeoutSeconds Timeout for each probe.
+    timeoutSeconds: 5
+    ## @param probes.readiness.failureThreshold Number of consecutive failures before marking the probe as failed.
+    failureThreshold: 3
+    ## @param probes.readiness.successThreshold Number of consecutive successes before marking the probe as successful.
+    successThreshold: 1

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "playlist-mirror.fullname" . }}-config
+  labels:
+    {{- include "playlist-mirror.labels" . | nindent 4 }}
+data:
+  DATA_DIR: /app/data
+  {{- if .Values.config.publicBaseUrl }}
+  PUBLIC_BASE_URL: {{ .Values.config.publicBaseUrl | quote }}
+  {{- end }}
+  PLAYLIST_PRIVACY: {{ .Values.config.playlistPrivacy | quote }}
+  QUOTA_DAILY_LIMIT: {{ .Values.config.quotaDailyLimit | quote }}
+  QUOTA_RESERVE: {{ .Values.config.quotaReserve | quote }}
+  QUOTA_RESET_TZ: {{ .Values.config.quotaResetTz | quote }}
+  SCHEDULER_INTERVAL: {{ .Values.config.schedulerInterval | quote }}
+  INSERT_DELAY: {{ .Values.config.insertDelay | quote }}

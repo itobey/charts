@@ -4,3 +4,4 @@ This repository contains the sources for Helm Charts which are uploaded as `oci`
 ## Projects 
 
 - [FDDB-Exporter](https://github.com/itobey/fddb-exporter)
+- [Playlist Mirror](https://github.com/itobey/playlist-mirror)

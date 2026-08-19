@@ -1,0 +1,12 @@
+apiVersion: v2
+name: playlist-mirror
+description: A Helm chart for Playlist Mirror
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: itobey
+    email: helm@itobey.dev
+home: https://github.com/itobey/playlist-mirror
+sources:
+  - https://github.com/itobey/playlist-mirror

@@ -9,7 +9,7 @@ replicaCount: 1
 ## @param image.pullPolicy The Kubernetes image pull policy
 image:
   repository: ghcr.io/itobey/playlist-mirror
-  tag: ""
+  tag: "1.0.0"
   pullPolicy: IfNotPresent
 
 ## @section Image Pull Secrets

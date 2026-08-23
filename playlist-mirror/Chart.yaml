@@ -2,8 +2,8 @@ apiVersion: v2
 name: playlist-mirror
 description: A Helm chart for Playlist Mirror
 type: application
-version: 0.1.0
-appVersion: "latest"
+version: 1.0.0
+appVersion: "1.0.0"
 maintainers:
   - name: itobey
     email: helm@itobey.dev

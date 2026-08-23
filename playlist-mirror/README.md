@@ -4,7 +4,7 @@ See: [application repository](https://github.com/itobey/playlist-mirror)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/playlist-mirror --version 0.1.0
+helm pull oci://ghcr.io/itobey/charts/playlist-mirror --version 1.0.0
 ```
 
 Single-user, single-replica app: it keeps its job state in a local SQLite file under
@@ -26,9 +26,9 @@ then on).
 
 # Changelog
 
-## 0.1.0
+## 1.0.0
 
-- Initial chart.
+- Initial stable release.
 
 ## Parameters
 
@@ -43,7 +43,7 @@ then on).
 | Name                | Description                                             | Value                                     |
 | ------------------- | -------------------------------------------------------- | ------------------------------------------ |
 | `image.repository`  | The image repository to pull from                       | `ghcr.io/itobey/playlist-mirror` |
-| `image.tag`         | The image tag to pull, defaults to the chart's appVersion | `""`                                       |
+| `image.tag`         | The image tag to pull                                    | `"1.0.0"`                                  |
 | `image.pullPolicy`  | The Kubernetes image pull policy                        | `IfNotPresent`                            |
 | `imagePullSecrets`  | Secrets used to pull the image from a private registry  | `[]`                                       |
 

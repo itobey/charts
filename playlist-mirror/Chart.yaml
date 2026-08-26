@@ -10,3 +10,7 @@ maintainers:
 home: https://github.com/itobey/playlist-mirror
 sources:
   - https://github.com/itobey/playlist-mirror
+annotations:
+  artifacthub.io/signKey: |
+    fingerprint: 72B5513C9AFD0D076A4A74F16568CD480699F07C
+    url: https://raw.githubusercontent.com/itobey/charts/master/helm-signing-key.asc

@@ -1,0 +1,544 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "FDDB Exporter Helm chart values",
+  "description": "Configuration values for the FDDB Exporter Helm chart.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "replicaCount",
+    "image",
+    "nameOverride",
+    "fullnameOverride",
+    "serviceAccount",
+    "podAnnotations",
+    "podSecurityContext",
+    "securityContext",
+    "service",
+    "ingress",
+    "resources",
+    "nodeSelector",
+    "tolerations",
+    "affinity",
+    "probes",
+    "mongodb",
+    "influxdb",
+    "fddb",
+    "notification",
+    "mcp",
+    "timezone",
+    "podMonitor"
+  ],
+  "properties": {
+    "replicaCount": {
+      "description": "Number of application replicas to deploy.",
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "image": {
+      "description": "Container image configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "tag", "pullPolicy"],
+      "properties": {
+        "repository": {
+          "description": "Container image repository.",
+          "type": "string",
+          "minLength": 1,
+          "default": "ghcr.io/itobey/fddb-exporter"
+        },
+        "tag": {
+          "description": "Container image tag. When empty, the chart appVersion is used.",
+          "type": "string",
+          "default": "2.4.1"
+        },
+        "pullPolicy": {
+          "description": "Kubernetes image pull policy.",
+          "type": "string",
+          "enum": ["Always", "IfNotPresent", "Never"],
+          "default": "IfNotPresent"
+        }
+      }
+    },
+    "imagePullSecrets": {
+      "description": "References to secrets used to pull images from private registries.",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "nameOverride": {
+      "description": "Partially override the generated resource name.",
+      "type": "string",
+      "default": ""
+    },
+    "fullnameOverride": {
+      "description": "Fully override the generated resource name.",
+      "type": "string",
+      "default": ""
+    },
+    "serviceAccount": {
+      "description": "Kubernetes ServiceAccount configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["create", "annotations", "name"],
+      "properties": {
+        "create": {
+          "description": "Create a ServiceAccount for the application.",
+          "type": "boolean",
+          "default": true
+        },
+        "annotations": {
+          "description": "Annotations added to the ServiceAccount.",
+          "$ref": "#/definitions/stringMap"
+        },
+        "name": {
+          "description": "Name of an existing ServiceAccount. Empty uses the generated name.",
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "podAnnotations": {
+      "description": "Annotations added to application pods.",
+      "$ref": "#/definitions/stringMap"
+    },
+    "podSecurityContext": {
+      "description": "Pod-level Kubernetes security context.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
+    "securityContext": {
+      "description": "Container-level Kubernetes security context.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
+    "service": {
+      "description": "Kubernetes Service configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "port"],
+      "properties": {
+        "type": {
+          "description": "Kubernetes Service type.",
+          "type": "string",
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"],
+          "default": "ClusterIP"
+        },
+        "port": {
+          "description": "Service and application container port.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 8080
+        }
+      }
+    },
+    "ingress": {
+      "description": "Kubernetes Ingress configuration.",
+      "$ref": "#/definitions/ingress"
+    },
+    "resources": {
+      "description": "Container resource requests and limits.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
+    "nodeSelector": {
+      "description": "Node labels used to constrain pod scheduling.",
+      "$ref": "#/definitions/stringMap"
+    },
+    "tolerations": {
+      "description": "Pod tolerations.",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "affinity": {
+      "description": "Pod affinity and anti-affinity rules.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
+    "probes": {
+      "description": "Application health probe configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["liveness", "readiness"],
+      "properties": {
+        "liveness": {
+          "description": "Liveness probe settings.",
+          "$ref": "#/definitions/probe"
+        },
+        "readiness": {
+          "description": "Readiness probe settings.",
+          "$ref": "#/definitions/probe"
+        }
+      }
+    },
+    "mongodb": {
+      "description": "MongoDB connection configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "host", "port", "database", "username", "password", "secretRef"],
+      "properties": {
+        "enabled": {
+          "description": "Enable MongoDB integration.",
+          "type": "boolean",
+          "default": true
+        },
+        "host": {
+          "description": "MongoDB host name.",
+          "type": "string",
+          "minLength": 1,
+          "default": "localhost"
+        },
+        "port": {
+          "description": "MongoDB port.",
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "default": "27017"
+        },
+        "database": {
+          "description": "MongoDB database name.",
+          "type": "string",
+          "minLength": 1,
+          "default": "database"
+        },
+        "username": {
+          "description": "MongoDB username used when no existing secret is selected.",
+          "type": "string",
+          "default": "username"
+        },
+        "password": {
+          "description": "MongoDB password used when no existing secret is selected.",
+          "type": "string",
+          "default": "password"
+        },
+        "secretRef": {
+          "description": "Reference to an existing MongoDB Secret containing SPRING_MONGODB_PASSWORD.",
+          "$ref": "#/definitions/secretRef"
+        }
+      }
+    },
+    "influxdb": {
+      "description": "InfluxDB connection configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "url", "org", "bucket", "token", "secretRef"],
+      "properties": {
+        "enabled": {
+          "description": "Enable InfluxDB integration.",
+          "type": "boolean",
+          "default": false
+        },
+        "url": {
+          "description": "InfluxDB base URL.",
+          "type": "string",
+          "pattern": "^https?://",
+          "default": "http://localhost:8086"
+        },
+        "org": {
+          "description": "InfluxDB organization.",
+          "type": "string",
+          "minLength": 1,
+          "default": "primary"
+        },
+        "bucket": {
+          "description": "InfluxDB bucket.",
+          "type": "string",
+          "minLength": 1,
+          "default": "fddb-exporter"
+        },
+        "token": {
+          "description": "InfluxDB token used when no existing secret is selected.",
+          "type": "string",
+          "default": "token"
+        },
+        "secretRef": {
+          "description": "Reference to an existing InfluxDB Secret containing FDDB_EXPORTER_INFLUXDB_TOKEN.",
+          "$ref": "#/definitions/secretRef"
+        }
+      }
+    },
+    "fddb": {
+      "description": "FDDB authentication configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["auth"],
+      "properties": {
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["username", "password", "secretRef"],
+          "properties": {
+            "username": {
+              "description": "FDDB username used when no existing secret is selected.",
+              "type": "string",
+              "default": "username"
+            },
+            "password": {
+              "description": "FDDB password used when no existing secret is selected.",
+              "type": "string",
+              "default": "password"
+            },
+            "secretRef": {
+              "description": "Reference to an existing Secret containing FDDB credentials.",
+              "$ref": "#/definitions/secretRef"
+            }
+          }
+        }
+      }
+    },
+    "notification": {
+      "description": "Failed-export notification configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "telegram"],
+      "properties": {
+        "enabled": {
+          "description": "Enable notifications for failed scheduled exports.",
+          "type": "boolean",
+          "default": false
+        },
+        "telegram": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["token", "chatId", "secretRef"],
+          "properties": {
+            "token": {
+              "description": "Telegram bot token used when no existing secret is selected.",
+              "type": "string",
+              "default": "token"
+            },
+            "chatId": {
+              "description": "Telegram chat ID used when no existing secret is selected.",
+              "type": "string",
+              "default": "chatId"
+            },
+            "secretRef": {
+              "description": "Reference to an existing Secret containing the Telegram token and chat ID.",
+              "$ref": "#/definitions/secretRef"
+            }
+          }
+        }
+      }
+    },
+    "mcp": {
+      "description": "MCP server configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "writeToolsEnabled"],
+      "properties": {
+        "enabled": {
+          "description": "Expose the MCP endpoint with read-only tools.",
+          "type": "boolean",
+          "default": false
+        },
+        "writeToolsEnabled": {
+          "description": "Expose MCP export tools that scrape FDDB and write to MongoDB.",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "timezone": {
+      "description": "Timezone used by FDDB Exporter.",
+      "type": "string",
+      "minLength": 1,
+      "default": "Europe/Berlin"
+    },
+    "podMonitor": {
+      "description": "Prometheus Operator PodMonitor configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "interval", "scrapeTimeout", "path"],
+      "properties": {
+        "enabled": {
+          "description": "Create a PodMonitor resource.",
+          "type": "boolean",
+          "default": false
+        },
+        "interval": {
+          "description": "Metrics scrape interval.",
+          "type": "string",
+          "pattern": "^[0-9]+(ms|s|m|h)$",
+          "default": "30s"
+        },
+        "scrapeTimeout": {
+          "description": "Metrics scrape timeout.",
+          "type": "string",
+          "pattern": "^[0-9]+(ms|s|m|h)$",
+          "default": "10s"
+        },
+        "path": {
+          "description": "HTTP path from which Prometheus scrapes metrics.",
+          "type": "string",
+          "pattern": "^/",
+          "default": "/metrics"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "stringMap": {
+      "type": "object",
+      "default": {},
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "secretRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "description": "Name of the existing Kubernetes Secret. Empty creates and uses a chart-managed Secret.",
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "path", "port", "initialDelaySeconds", "periodSeconds", "timeoutSeconds", "failureThreshold", "successThreshold"],
+      "properties": {
+        "enabled": {
+          "description": "Enable this health probe.",
+          "type": "boolean"
+        },
+        "path": {
+          "description": "HTTP path checked by the probe.",
+          "type": "string",
+          "pattern": "^/"
+        },
+        "port": {
+          "description": "Named or numeric container port checked by the probe.",
+          "oneOf": [
+            {"type": "string", "minLength": 1},
+            {"type": "integer", "minimum": 1, "maximum": 65535}
+          ]
+        },
+        "initialDelaySeconds": {
+          "description": "Delay before the first probe.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "periodSeconds": {
+          "description": "Interval between probes.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "timeoutSeconds": {
+          "description": "Maximum duration of a probe attempt.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "failureThreshold": {
+          "description": "Consecutive failures required to mark the probe failed.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "successThreshold": {
+          "description": "Consecutive successes required to mark the probe successful.",
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "className", "hosts", "tls"],
+      "properties": {
+        "enabled": {
+          "description": "Create an Ingress resource.",
+          "type": "boolean",
+          "default": true
+        },
+        "className": {
+          "description": "IngressClass name.",
+          "type": "string",
+          "default": ""
+        },
+        "annotations": {
+          "description": "Annotations added to the Ingress.",
+          "$ref": "#/definitions/stringMap"
+        },
+        "hosts": {
+          "description": "Ingress hosts and paths.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["host", "paths"],
+            "properties": {
+              "host": {
+                "description": "DNS host exposed by this Ingress rule.",
+                "type": "string",
+                "minLength": 1
+              },
+              "paths": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["path", "pathType"],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "^/"
+                    },
+                    "pathType": {
+                      "type": "string",
+                      "enum": ["Exact", "Prefix", "ImplementationSpecific"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tls": {
+          "description": "Ingress TLS certificates and covered hosts.",
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["hosts", "secretName"],
+            "properties": {
+              "hosts": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"type": "string", "minLength": 1}
+              },
+              "secretName": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

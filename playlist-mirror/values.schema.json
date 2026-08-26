@@ -1,0 +1,432 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Playlist Mirror Helm chart values",
+  "description": "Configuration values for the Playlist Mirror Helm chart.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "replicaCount",
+    "image",
+    "imagePullSecrets",
+    "nameOverride",
+    "fullnameOverride",
+    "serviceAccount",
+    "podAnnotations",
+    "podSecurityContext",
+    "securityContext",
+    "service",
+    "ingress",
+    "persistence",
+    "config",
+    "telegram",
+    "resources",
+    "nodeSelector",
+    "tolerations",
+    "affinity",
+    "probes"
+  ],
+  "properties": {
+    "replicaCount": {
+      "description": "Number of application replicas. Playlist Mirror uses local SQLite state and therefore supports exactly one replica.",
+      "type": "integer",
+      "const": 1,
+      "default": 1
+    },
+    "image": {
+      "description": "Container image configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "tag", "pullPolicy"],
+      "properties": {
+        "repository": {
+          "description": "Container image repository.",
+          "type": "string",
+          "minLength": 1,
+          "default": "ghcr.io/itobey/playlist-mirror"
+        },
+        "tag": {
+          "description": "Container image tag. When empty, the chart appVersion is used.",
+          "type": "string",
+          "default": "1.0.0"
+        },
+        "pullPolicy": {
+          "description": "Kubernetes image pull policy.",
+          "type": "string",
+          "enum": ["Always", "IfNotPresent", "Never"],
+          "default": "IfNotPresent"
+        }
+      }
+    },
+    "imagePullSecrets": {
+      "description": "References to secrets used to pull images from private registries.",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "nameOverride": {
+      "description": "Partially override the generated resource name.",
+      "type": "string",
+      "default": ""
+    },
+    "fullnameOverride": {
+      "description": "Fully override the generated resource name.",
+      "type": "string",
+      "default": ""
+    },
+    "serviceAccount": {
+      "description": "Kubernetes ServiceAccount configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["create", "annotations", "name"],
+      "properties": {
+        "create": {
+          "description": "Create a ServiceAccount for the application.",
+          "type": "boolean",
+          "default": true
+        },
+        "annotations": {
+          "description": "Annotations added to the ServiceAccount.",
+          "$ref": "#/definitions/stringMap"
+        },
+        "name": {
+          "description": "Name of an existing ServiceAccount. Empty uses the generated name.",
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "podAnnotations": {
+      "description": "Annotations added to application pods.",
+      "$ref": "#/definitions/stringMap"
+    },
+    "podSecurityContext": {
+      "description": "Pod-level Kubernetes security context.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
+    "securityContext": {
+      "description": "Container-level Kubernetes security context.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
+    "service": {
+      "description": "Kubernetes Service configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "port"],
+      "properties": {
+        "type": {
+          "description": "Kubernetes Service type.",
+          "type": "string",
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"],
+          "default": "ClusterIP"
+        },
+        "port": {
+          "description": "Service and application container port.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 8000
+        }
+      }
+    },
+    "ingress": {
+      "description": "Kubernetes Ingress configuration.",
+      "$ref": "#/definitions/ingress"
+    },
+    "persistence": {
+      "description": "Persistent storage configuration for OAuth credentials and the SQLite database.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "existingClaim", "storageClass", "accessMode", "size"],
+      "properties": {
+        "enabled": {
+          "description": "Mount persistent storage at /app/data.",
+          "type": "boolean",
+          "default": true
+        },
+        "existingClaim": {
+          "description": "Existing PersistentVolumeClaim name. Empty creates a claim.",
+          "type": "string",
+          "default": ""
+        },
+        "storageClass": {
+          "description": "StorageClass for the generated claim. Empty uses the cluster default.",
+          "type": "string",
+          "default": ""
+        },
+        "accessMode": {
+          "description": "Access mode for the generated PersistentVolumeClaim.",
+          "type": "string",
+          "enum": ["ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", "ReadWriteOncePod"],
+          "default": "ReadWriteOnce"
+        },
+        "size": {
+          "description": "Storage requested by the generated PersistentVolumeClaim.",
+          "type": "string",
+          "minLength": 1,
+          "default": "1Gi"
+        }
+      }
+    },
+    "config": {
+      "description": "Playlist Mirror application configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicBaseUrl", "playlistPrivacy", "quotaDailyLimit", "quotaReserve", "quotaResetTz", "schedulerInterval", "insertDelay"],
+      "properties": {
+        "publicBaseUrl": {
+          "description": "Public application URL used for the OAuth callback. Empty is suitable only for localhost access.",
+          "type": "string",
+          "pattern": "^$|^https?://",
+          "default": ""
+        },
+        "playlistPrivacy": {
+          "description": "Privacy assigned to playlists created by the application.",
+          "type": "string",
+          "enum": ["private", "unlisted", "public"],
+          "default": "private"
+        },
+        "quotaDailyLimit": {
+          "description": "YouTube Data API daily quota used to seed application settings.",
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "default": "10000"
+        },
+        "quotaReserve": {
+          "description": "Quota units reserved so a run does not exhaust the allocation.",
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "default": "50"
+        },
+        "quotaResetTz": {
+          "description": "Timezone used for the daily quota reset.",
+          "type": "string",
+          "minLength": 1,
+          "default": "America/Los_Angeles"
+        },
+        "schedulerInterval": {
+          "description": "Seconds between checks for jobs waiting for quota.",
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "default": "60"
+        },
+        "insertDelay": {
+          "description": "Seconds to pause between playlist insert operations.",
+          "type": "string",
+          "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+          "default": "0.2"
+        }
+      }
+    },
+    "telegram": {
+      "description": "Telegram notification configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["secretRef"],
+      "properties": {
+        "secretRef": {
+          "description": "Reference to an existing Secret containing TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "properties": {
+            "name": {
+              "description": "Existing Kubernetes Secret name. Empty disables Telegram configuration seeding.",
+              "type": "string",
+              "default": ""
+            }
+          }
+        }
+      }
+    },
+    "resources": {
+      "description": "Container resource requests and limits.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
+    "nodeSelector": {
+      "description": "Node labels used to constrain pod scheduling.",
+      "$ref": "#/definitions/stringMap"
+    },
+    "tolerations": {
+      "description": "Pod tolerations.",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "affinity": {
+      "description": "Pod affinity and anti-affinity rules.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
+    "probes": {
+      "description": "Application health probe configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["liveness", "readiness"],
+      "properties": {
+        "liveness": {
+          "description": "Liveness probe settings.",
+          "$ref": "#/definitions/probe"
+        },
+        "readiness": {
+          "description": "Readiness probe settings.",
+          "$ref": "#/definitions/probe"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "stringMap": {
+      "type": "object",
+      "default": {},
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "path", "port", "initialDelaySeconds", "periodSeconds", "timeoutSeconds", "failureThreshold", "successThreshold"],
+      "properties": {
+        "enabled": {
+          "description": "Enable this health probe.",
+          "type": "boolean"
+        },
+        "path": {
+          "description": "HTTP path checked by the probe.",
+          "type": "string",
+          "pattern": "^/"
+        },
+        "port": {
+          "description": "Named or numeric container port checked by the probe.",
+          "oneOf": [
+            {"type": "string", "minLength": 1},
+            {"type": "integer", "minimum": 1, "maximum": 65535}
+          ]
+        },
+        "initialDelaySeconds": {
+          "description": "Delay before the first probe.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "periodSeconds": {
+          "description": "Interval between probes.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "timeoutSeconds": {
+          "description": "Maximum duration of a probe attempt.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "failureThreshold": {
+          "description": "Consecutive failures required to mark the probe failed.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "successThreshold": {
+          "description": "Consecutive successes required to mark the probe successful.",
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "className", "annotations", "hosts", "tls"],
+      "properties": {
+        "enabled": {
+          "description": "Create an Ingress resource.",
+          "type": "boolean",
+          "default": true
+        },
+        "className": {
+          "description": "IngressClass name.",
+          "type": "string",
+          "default": ""
+        },
+        "annotations": {
+          "description": "Annotations added to the Ingress.",
+          "$ref": "#/definitions/stringMap"
+        },
+        "hosts": {
+          "description": "Ingress hosts and paths.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["host", "paths"],
+            "properties": {
+              "host": {
+                "description": "DNS host exposed by this Ingress rule.",
+                "type": "string",
+                "minLength": 1
+              },
+              "paths": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["path", "pathType"],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "^/"
+                    },
+                    "pathType": {
+                      "type": "string",
+                      "enum": ["Exact", "Prefix", "ImplementationSpecific"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tls": {
+          "description": "Ingress TLS certificates and covered hosts.",
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["hosts", "secretName"],
+            "properties": {
+              "hosts": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"type": "string", "minLength": 1}
+              },
+              "secretName": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

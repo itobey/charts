@@ -1,0 +1,104 @@
+name: Publish signed Helm chart
+
+on:
+  workflow_dispatch:
+    inputs:
+      chart:
+        description: Chart to publish
+        required: true
+        type: choice
+        options:
+          - fddb-exporter
+          - playlist-mirror
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Sign and publish ${{ inputs.chart }}
+    runs-on: ubuntu-latest
+    env:
+      CHART: ${{ inputs.chart }}
+      REGISTRY: ghcr.io
+      REGISTRY_NAMESPACE: ghcr.io/itobey/charts
+      SIGNING_FINGERPRINT: 72B5513C9AFD0D076A4A74F16568CD480699F07C
+      SIGNING_IDENTITY: itobey Helm Charts <helm@itobey.dev>
+      HELM_GPG_PRIVATE_KEY: ${{ secrets.HELM_GPG_PRIVATE_KEY }}
+      HELM_GPG_PASSPHRASE: ${{ secrets.HELM_GPG_PASSPHRASE }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.15.4
+
+      - name: Import signing key
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' "$HELM_GPG_PRIVATE_KEY" | gpg --batch --import
+          printf '%s' "$HELM_GPG_PASSPHRASE" > "$RUNNER_TEMP/helm-gpg-passphrase"
+          gpg \
+            --batch \
+            --yes \
+            --pinentry-mode loopback \
+            --passphrase-file "$RUNNER_TEMP/helm-gpg-passphrase" \
+            --export-secret-keys "$SIGNING_FINGERPRINT" \
+            > "$RUNNER_TEMP/helm-secring.gpg"
+          gpg --batch --export "$SIGNING_FINGERPRINT" > "$RUNNER_TEMP/helm-pubring.gpg"
+
+      - name: Lint and package signed chart
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          helm lint "./$CHART"
+          version="$(helm show chart "./$CHART" | awk '$1 == "version:" { print $2; exit }')"
+          test -n "$version"
+          mkdir -p dist
+          helm package "./$CHART" \
+            --destination dist \
+            --sign \
+            --key "$SIGNING_IDENTITY" \
+            --keyring "$RUNNER_TEMP/helm-secring.gpg" \
+            --passphrase-file "$RUNNER_TEMP/helm-gpg-passphrase"
+          chart_archive="dist/${CHART}-${version}.tgz"
+          test -f "$chart_archive"
+          test -f "${chart_archive}.prov"
+          helm verify "$chart_archive" --keyring "$RUNNER_TEMP/helm-pubring.gpg"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "archive=$chart_archive" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' "$GITHUB_TOKEN" | helm registry login "$REGISTRY" \
+            --username "$GITHUB_ACTOR" \
+            --password-stdin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push chart and provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          helm push "${{ steps.package.outputs.archive }}" "oci://$REGISTRY_NAMESPACE"
+
+      - name: Verify published provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p pulled
+          helm pull "oci://$REGISTRY_NAMESPACE/$CHART" \
+            --version "${{ steps.package.outputs.version }}" \
+            --destination pulled \
+            --prov
+          helm verify \
+            "pulled/${CHART}-${{ steps.package.outputs.version }}.tgz" \
+            --keyring "$RUNNER_TEMP/helm-pubring.gpg"

@@ -4,7 +4,7 @@ See: [application repository](https://github.com/itobey/playlist-mirror)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/playlist-mirror --version 1.0.0
+helm pull oci://ghcr.io/itobey/charts/playlist-mirror --version 1.0.3
 ```
 
 Single-user, single-replica app: it keeps its job state in a local SQLite file under
@@ -25,6 +25,10 @@ those up from the app's own Telegram page instead (they're stored in the databas
 then on).
 
 # Changelog
+
+## 1.0.3
+
+- Allowed Helm's reserved `global` values object so the chart can be used as a dependency of an umbrella chart.
 
 ## 1.0.0
 

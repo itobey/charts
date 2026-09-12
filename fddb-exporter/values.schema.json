@@ -29,6 +29,12 @@
     "podMonitor"
   ],
   "properties": {
+    "global": {
+      "description": "Values shared with dependent charts when this chart is used as a subchart.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
     "replicaCount": {
       "description": "Number of application replicas to deploy.",
       "type": "integer",

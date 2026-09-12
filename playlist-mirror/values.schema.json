@@ -26,6 +26,12 @@
     "probes"
   ],
   "properties": {
+    "global": {
+      "description": "Values shared with dependent charts when this chart is used as a subchart.",
+      "type": "object",
+      "default": {},
+      "additionalProperties": true
+    },
     "replicaCount": {
       "description": "Number of application replicas. Playlist Mirror uses local SQLite state and therefore supports exactly one replica.",
       "type": "integer",

@@ -3,10 +3,14 @@ See: [application repository](https://github.com/itobey/fddb-exporter)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.4.1
+helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.4.3
 ```
 
 # Changelog
+
+## 2.4.3
+
+- Allowed Helm's reserved `global` values object so the chart can be used as a dependency of an umbrella chart.
 
 ## 2.4.1
 

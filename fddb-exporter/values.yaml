@@ -12,7 +12,7 @@ replicaCount: 1
 ## @param image.pullPolicy The Kubernetes image pull policy
 image:
   repository: ghcr.io/itobey/fddb-exporter
-  tag: 2.5.0
+  tag: 2.6.0
   pullPolicy: IfNotPresent
 
 ## @section Name Overrides

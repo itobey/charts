@@ -23,6 +23,7 @@
     "mongodb",
     "influxdb",
     "fddb",
+    "bodyMeasurements",
     "notification",
     "mcp",
     "timezone",
@@ -307,6 +308,19 @@
               "$ref": "#/definitions/secretRef"
             }
           }
+        }
+      }
+    },
+    "bodyMeasurements": {
+      "description": "FDDB Weight Report synchronization.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "description": "Fetch body measurements once per diary sync when MongoDB is enabled.",
+          "type": "boolean",
+          "default": false
         }
       }
     },

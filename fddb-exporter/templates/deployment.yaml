@@ -37,6 +37,8 @@ spec:
             - configMapRef:
                 name: {{ include "fddb-exporter.fullname" . }}-config
           env:
+            - name: FDDB_EXPORTER_BODY_MEASUREMENTS_ENABLED
+              value: {{ .Values.bodyMeasurements.enabled | quote }}
             - name: FDDB-EXPORTER_FDDB_USERNAME
               valueFrom:
                 secretKeyRef:

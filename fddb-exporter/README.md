@@ -116,6 +116,16 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.6.3
 | `fddb.auth.password`       | FDDB password.                                   | `password`             |
 | `fddb.auth.secretRef.name` | Reference to the secret for FDDB authentication. | `fddb-exporter-secret` |
 
+### Body measurement sync
+
+| Name                       | Description                                              | Default |
+| -------------------------- | -------------------------------------------------------- | ------- |
+| `bodyMeasurements.enabled` | Fetch the FDDB Weight Report once per diary sync.        | `false` |
+
+Set `bodyMeasurements.enabled` and `mongodb.enabled` to `true`. This setting requires an FDDB Exporter
+image with body measurement sync support (2.6.4 or later). Use `image.tag` to select a compatible image
+when the chart defaults to an older version.
+
 ### MongoDB configuration
 
 | Name                     | Description                                                              | Value       |

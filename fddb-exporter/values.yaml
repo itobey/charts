@@ -170,6 +170,11 @@ fddb:
       ## @param fddb.auth.secretRef.name Reference to the secret for FDDB authentication. Must have key FDDB-EXPORTER_FDDB_USERNAME and FDDB-EXPORTER_FDDB_PASSWORD
       name: ""
 
+## @section Body measurement sync
+bodyMeasurements:
+  ## @param bodyMeasurements.enabled Fetch the FDDB Weight Report once per diary sync. Requires mongodb.enabled.
+  enabled: false
+
 ## @section Notification configuration
 ## Configuration parameters for Telegram notifications, sent when a scheduled export cannot parse a day.
 notification:

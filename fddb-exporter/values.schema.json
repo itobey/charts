@@ -57,7 +57,7 @@
         "tag": {
           "description": "Container image tag. When empty, the chart appVersion is used.",
           "type": "string",
-          "default": "2.4.1"
+          "default": "2.7.0"
         },
         "pullPolicy": {
           "description": "Kubernetes image pull policy.",

@@ -3,10 +3,15 @@ See: [application repository](https://github.com/itobey/fddb-exporter)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.6.3
+helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.7.0
 ```
 
 # Changelog
+
+## 2.7.0
+
+- Updated default app version to 2.7.0.
+- Added `bodyMeasurements.enabled` to opt in to FDDB Weight Report sync with MongoDB.
 
 ## 2.6.3
 
@@ -98,7 +103,7 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.6.3
 | Name               | Description                       | Value                          |
 | ------------------ | --------------------------------- |--------------------------------|
 | `image.repository` | The image repository to pull from | `ghcr.io/itobey/fddb-exporter` |
-| `image.tag`        | The image tag to pull             | `2.5.0`                        |
+| `image.tag`        | The image tag to pull             | `2.7.0`                        |
 | `image.pullPolicy` | The Kubernetes image pull policy  | `IfNotPresent`                 |
 
 ### Name Overrides
@@ -122,9 +127,7 @@ helm pull oci://ghcr.io/itobey/charts/fddb-exporter --version 2.6.3
 | -------------------------- | -------------------------------------------------------- | ------- |
 | `bodyMeasurements.enabled` | Fetch the FDDB Weight Report once per diary sync.        | `false` |
 
-Set `bodyMeasurements.enabled` and `mongodb.enabled` to `true`. This setting requires an FDDB Exporter
-image with body measurement sync support (2.6.4 or later). Use `image.tag` to select a compatible image
-when the chart defaults to an older version.
+Set `bodyMeasurements.enabled` and `mongodb.enabled` to `true`. This setting requires FDDB Exporter 2.7.0 or later.
 
 ### MongoDB configuration
 

@@ -4,7 +4,7 @@ See: [application repository](https://github.com/itobey/playlist-mirror)
 
 Usage:
 ```
-helm pull oci://ghcr.io/itobey/charts/playlist-mirror --version 1.0.3
+helm pull oci://ghcr.io/itobey/charts/playlist-mirror --version 1.0.4
 ```
 
 Single-user, single-replica app: it keeps its job state in a local SQLite file under
@@ -15,7 +15,7 @@ uploaded OAuth client secret, the token, and every job are lost on restart.
 Before first use, set `config.publicBaseUrl` to wherever the app is actually reached
 (e.g. `https://playlist.example.com`). Google sends the OAuth sign-in back to
 `<publicBaseUrl>/oauth/callback`, so sign-in fails behind an ingress until this matches.
-On first visit you land on `/setup` to upload a Google OAuth "Desktop app" client secret
+On first visit you land on `/setup` to upload a Google OAuth "Web application" client secret
 JSON file and sign in.
 
 Telegram notifications are optional and off by default. This chart intentionally does not
@@ -25,6 +25,11 @@ those up from the app's own Telegram page instead (they're stored in the databas
 then on).
 
 # Changelog
+
+## 1.0.4
+
+- Updated default app version to 1.0.4.
+- Corrected the ingress OAuth setup instructions to use a Web application client.
 
 ## 1.0.3
 
@@ -47,7 +52,7 @@ then on).
 | Name                | Description                                             | Value                                     |
 | ------------------- | -------------------------------------------------------- | ------------------------------------------ |
 | `image.repository`  | The image repository to pull from                       | `ghcr.io/itobey/playlist-mirror` |
-| `image.tag`         | The image tag to pull                                    | `"1.0.0"`                                  |
+| `image.tag`         | The image tag to pull                                    | `"1.0.4"`                                  |
 | `image.pullPolicy`  | The Kubernetes image pull policy                        | `IfNotPresent`                            |
 | `imagePullSecrets`  | Secrets used to pull the image from a private registry  | `[]`                                       |
 
